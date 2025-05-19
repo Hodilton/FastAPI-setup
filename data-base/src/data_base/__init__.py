@@ -1,3 +1,3 @@
-from .core.database_service import DatabaseService
+from .core.database_wrapper import DatabaseWrapper
 
-__all__ = ["DatabaseService"]
+__all__ = ["DatabaseWrapper"]
