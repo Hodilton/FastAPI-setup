@@ -20,7 +20,7 @@ optional = false
 python-versions = ">=3.13"
 groups = ["main"]
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 file-work = {path = "../file-work"}
@@ -32,7 +32,7 @@ url = "data-base"
 
 [[package]]
 name = "file-work"
-version = "0.2.0"
+version = "0.3.0"
 description = ""
 optional = false
 python-versions = ">=3.13"
@@ -49,13 +49,13 @@ url = "file-work"
 
 [[package]]
 name = "log-manager"
-version = "0.1.0"
+version = "0.2.0"
 description = ""
 optional = false
 python-versions = ">=3.13"
 groups = ["main"]
 files = []
-develop = false
+develop = true
 
 [package.dependencies]
 colorama = ">=0.4.6,<0.5.0"
@@ -110,4 +110,4 @@ telemetry = ["opentelemetry-api (==1.18.0)", "opentelemetry-exporter-otlp-proto-
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "dd759bc6a690020d9a722f41f4b23efa8077f0fdf6c2e176223bbf3203380d3f"
+content-hash = "6ba94c99bf8aa5b7f18abc9ae1686dbbbee0fbf1bd4fe90f1e74d4d9126b71cb"

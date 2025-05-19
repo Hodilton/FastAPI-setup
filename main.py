@@ -1,10 +1,11 @@
-from log_manager import setup_logging
-from data_base import DatabaseService
+from log_manager import LogManager
+from data_base import DatabaseWrapper
 
 def main():
-    setup_logging()
+    log_manager = LogManager("config/logging_config.json")
+    log_manager.setup_logging()
 
-    db = DatabaseService(config_path="config")
+    db = DatabaseWrapper("config")
     db.connect()
 
 if __name__ == "__main__":

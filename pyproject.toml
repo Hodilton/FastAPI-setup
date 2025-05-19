@@ -1,5 +1,5 @@
 [project]
-name = "server-v2"
+name = "fastapi-setup"
 version = "0.1.0"
 description = ""
 authors = [
@@ -8,8 +8,8 @@ authors = [
 requires-python = ">=3.13"
 
 [tool.poetry.dependencies]
-log-manager = { path = "./log-manager"}
-data-base = { path = "./data-base"}
+log-manager = { path = "./log-manager", develop = true}
+data-base = { path = "./data-base", develop = true}
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
