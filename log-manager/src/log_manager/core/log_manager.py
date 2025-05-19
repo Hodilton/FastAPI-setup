@@ -4,51 +4,90 @@ import json
 from pathlib import Path
 from typing import Optional, Dict, Any
 from colorama import init
+
 from .._internal.color_formatter import ColorFormatter
 
 init(autoreset=True)
 
 
 class LogManager:
-    def __init__(self, config_path: str = "config/logging_config.json"):
-        self._config_path = config_path
-        self._logger = logging.getLogger("LogManager")
+    _instance = None
 
-    def setup_logging(self, default_level: int = logging.INFO) -> bool:
+    DEFAULT_FORMAT = "%(asctime)s [%(levelname)s] [%(name)s] - %(message)s"
+    DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+    DEFAULT_LEVEL = logging.INFO
+    DEFAULT_CONFIG_PATH = "config/logging_config.json"
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self, config_path: Optional[str] = None):
+        if not hasattr(self, '_initialized'):
+            self._config_path = config_path or self.DEFAULT_CONFIG_PATH
+            self._logger = logging.getLogger(self.__class__.__name__)
+            self._initialized = True
+
+    def setup_logging(self) -> bool:
+        config = self._load_config()
+        if config is None:
+            self._setup_default_logging()
+            return False
+
+        try:
+            self._ensure_logs_dir(config)
+            logging.config.dictConfig(config)
+            self._apply_color_formatters(config)
+            return True
+        except Exception as e:
+            self._logger.error(f"Failed to setup logging: {str(e)}", exc_info=True)
+            self._setup_default_logging()
+            return False
+
+    def _setup_default_logging(self) -> None:
+        handler = logging.StreamHandler()
+        handler.setFormatter(ColorFormatter(
+            fmt=self.DEFAULT_FORMAT,
+            date_fmt=self.DEFAULT_DATE_FORMAT
+        ))
+
+        logging.basicConfig(
+            level=self.DEFAULT_LEVEL,
+            handlers=[handler]
+        )
+
+    def _load_config(self) -> Optional[Dict[str, Any]]:
         try:
             config_file = Path(self._config_path)
             if not config_file.exists():
-                raise FileNotFoundError(f"Logging config file not found at: {self._config_path}")
+                self._logger.error(f"Logging config file not found at: {self._config_path}")
+                return None
 
             with config_file.open('r', encoding='utf-8') as f:
-                config = json.load(f)
-
-            has_file_handler = any(
-                handler.get("class", "").endswith("FileHandler")
-                for handler in config.get("handlers", {}).values()
-            )
-
-            if has_file_handler:
-                log_dir = Path("logs")
-                log_dir.mkdir(exist_ok=True)
-
-            logging.config.dictConfig(config)
-
-            for logger_name in config.get("loggers", {}):
-                logger = logging.getLogger(logger_name)
-                for handler in logger.handlers:
-                    if isinstance(handler, logging.StreamHandler):
-                        handler.setFormatter(
-                            ColorFormatter(config["formatters"]["default"]["format"])
-                        )
-
-            return True
+                return json.load(f)
         except json.JSONDecodeError:
             self._logger.error(f"Invalid JSON format in logging config file: {self._config_path}")
-        except FileNotFoundError as e:
-            self._logger.error(str(e))
         except Exception as e:
-            self._logger.error(f"Failed to setup logging: {str(e)}", exc_info=True)
-            logging.basicConfig(level=default_level)
+            self._logger.error(f"Error loading config: {str(e)}")
+        return None
 
-        return False
+    def _ensure_logs_dir(self, config: Dict[str, Any]) -> None:
+        has_file_handler = any(
+            handler.get("class", "").endswith("FileHandler")
+            for handler in config.get("handlers", {}).values()
+        )
+        if has_file_handler:
+            Path("logs").mkdir(exist_ok=True)
+
+    def _apply_color_formatters(self, config: Dict[str, Any]) -> None:
+        root = logging.getLogger()
+        for handler in root.handlers:
+            if isinstance(handler, logging.StreamHandler):
+                handler.setFormatter(ColorFormatter())
+
+        for name, logger in logging.Logger.manager.loggerDict.items():
+            if isinstance(logger, logging.Logger):
+                for handler in logger.handlers:
+                    if isinstance(handler, logging.StreamHandler):
+                        handler.setFormatter(ColorFormatter())
