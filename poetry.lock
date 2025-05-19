@@ -32,7 +32,7 @@ url = "data-base"
 
 [[package]]
 name = "file-work"
-version = "0.3.0"
+version = "0.3.4"
 description = ""
 optional = false
 python-versions = ">=3.13"
