@@ -1,1 +1,3 @@
-__all__ = ["setup_logging"]
+from .core.log_manager import LogManager
+
+__all__ = ["LogManager"]
