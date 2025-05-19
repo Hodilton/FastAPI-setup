@@ -1,16 +1,8 @@
 import logging
 
 class Messages:
-    _logger = logging.getLogger("Data-base")
-
-    @classmethod
-    def set_logger(cls, logger):
-        cls._logger = logger
-
     class Complete:
-        @staticmethod
-        def connection(db_path):
-            Messages._logger.info(f"✅ Connection to database '{db_path}' was successful.")
+
 
         @staticmethod
         def close_connection(db_path):
@@ -25,22 +17,6 @@ class Messages:
             Messages._logger.info(f"✅ Database {db_path} has been deleted.")
 
         @staticmethod
-        def db_load_config():
-            Messages._logger.info(f"✅ Database config loaded successfully.")
-
-        @staticmethod
-        def table_load_config():
-            Messages._logger.info(f"✅ Tables config loaded successfully.")
-
-        @staticmethod
-        def table_load_queries(table_name):
-            Messages._logger.info(f"✅ Queries for table '{table_name}' loaded successfully.")
-
-        @staticmethod
-        def table_initialized(table_name):
-            Messages._logger.info(f"✅ Table '{table_name}' initialized with queries successfully.")
-
-        @staticmethod
         def table_creating(table_name):
             Messages._logger.info(f"✅ Table '{table_name}' created successfully.")
 
@@ -49,18 +25,6 @@ class Messages:
             Messages._logger.info(f"✅ Table '{table_name}' dropped successfully.")
 
     class Error:
-        @staticmethod
-        def try_action(exception):
-            Messages._logger.error(f"❌ An error occurred: '{exception}'.")
-
-        @staticmethod
-        def connection(db_path):
-            Messages._logger.error(f"❌ Connection to database '{db_path}' was not successful.")
-
-        @staticmethod
-        def miss_connection(db_path):
-            Messages._logger.error(f"❌ No connection to database '{db_path}' exists.")
-
         @staticmethod
         def db_path():
             Messages._logger.error("❌ Invalid database path configuration.")
@@ -81,20 +45,7 @@ class Messages:
         def db_file_found(db_path):
             Messages._logger.error(f"❌ Database file '{db_path}' not found.")
 
-        @staticmethod
-        def db_load_config():
-            Messages._logger.error("❌ Failed to load database config.")
-            raise Exception("The Database Config was not uploaded.")
 
-        @staticmethod
-        def table_load_config():
-            Messages._logger.error("❌ Failed to load tables config.")
-            raise Exception("The Tables Config was not uploaded.")
-
-        @staticmethod
-        def table_load_queries(table_name):
-            Messages._logger.error(f"❌ Failed to load queries for table '{table_name}'.")
-            raise Exception(f"Queries for table '{table_name}' was not uploaded.")
 
         @staticmethod
         def table_found(table_name):
@@ -103,14 +54,6 @@ class Messages:
         @staticmethod
         def table_already_exist(table_name):
             Messages._logger.error(f"❌ Table '{table_name}' already exists.")
-
-        @staticmethod
-        def connection_already_established(db_path):
-            Messages._logger.error(f"❌ Connection to database '{db_path}' already established.")
-
-        @staticmethod
-        def table_initialized(table_name):
-            Messages._logger.error(f"❌ Failed to initialize table '{table_name}'.")
 
         @staticmethod
         def table_creating(table_name):
