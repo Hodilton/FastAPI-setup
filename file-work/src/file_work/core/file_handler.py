@@ -3,7 +3,7 @@ from typing import Any, Optional
 
 from .._internal.handler_factory import FileHandlerFactory as Factory
 from .._utils.path_utils import resolve_file_path
-from .._shared.messages.msg_info import MsgInfo as Info
+from .._shared.messages.msg_debug import MsgDebug as Debug
 from .._shared.messages.msg_error import MsgError as Error
 
 
@@ -32,7 +32,7 @@ class File:
             ext = extension or full_path.split('.')[-1]
             handler = Factory.create_handler(ext)
             data = handler.read(full_path)
-            Info.file_read(full_path)
+            Debug.file_read(full_path)
             return data
         except Exception as e:
             Error.file_read(full_path, str(e))
@@ -62,7 +62,7 @@ class File:
             ext = extension or full_path.split('.')[-1]
             handler = Factory.create_handler(ext)
             handler.write(full_path, data, overwrite)
-            Info.file_write(full_path, overwrite)
+            Debug.file_write(full_path, overwrite)
             return True
         except Exception as e:
             Error.file_write(full_path, str(e))
