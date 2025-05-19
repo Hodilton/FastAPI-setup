@@ -1,5 +1,7 @@
 import mysql.connector
-from ..._utils.messages import Messages as Msg
+from ..._shared.messages.msg_debug import ConnectionDebug as Debug
+from ..._shared.messages.msg_info import ConnectionsInfo as Info
+from ..._shared.messages.msg_error import MsgError, ConnectionsError
 
 class MySQLConnection:
     def __init__(self, config: dict):
@@ -8,7 +10,7 @@ class MySQLConnection:
 
     def connect(self) -> bool:
         if self._connection:
-            Msg.Error.connection_already_established(self._config.get("database"))
+            Debug.connection_already_established(self._config.get("name"))
             return True
         try:
             self._connection = mysql.connector.connect(
@@ -17,10 +19,21 @@ class MySQLConnection:
                 password=self._config.get("password"),
                 database=self._config.get("name")
             )
-            Msg.Complete.connection(self._config.get("name"))
+            Info.connection_established(self._config.get("name"))
+            return True
+        except mysql.connector.DatabaseError as e:
+            MsgError.try_action(f"{str(e.msg)}")
+            ConnectionsError.connection_established(self._config.get("name"))
+            return False
+
+    def is_connected(self) -> bool:
+        if self._connection is None:
+            return False
+        try:
+            self._connection.ping(reconnect=False)
             return True
         except mysql.connector.Error as e:
-            Msg.Error.try_action(e)
+            MsgError.try_action(str(e))
             return False
 
     def close(self):
