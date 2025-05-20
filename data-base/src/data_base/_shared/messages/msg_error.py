@@ -5,19 +5,6 @@ class MsgError(MsgBase):
     def try_action(cls, exception: str) -> None:
         cls._logger.error(f"{exception}")
 
-class ConfigLoadError(MsgBase):
-    @classmethod
-    def database_load_config(cls, error: str) -> None:
-        cls._logger.error(f"The Database Config was not uploaded: {error}")
-
-    @classmethod
-    def tables_load_config(cls, error: str) -> None:
-        cls._logger.error(f"The Tables Config was not uploaded: {error}")
-
-    @classmethod
-    def table_load_queries(cls, table_name: str, error: str) -> None:
-        cls._logger.error(f"Queries for table '{table_name}' was not uploaded: {error}")
-
 class ConnectionsError(MsgBase):
     @classmethod
     def connection_established(cls, database_name: str) -> None:
