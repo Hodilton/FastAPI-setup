@@ -14,7 +14,7 @@
     }
   },
   "loggers": {
-    "File-work": {
+    "file-work": {
       "level": "ERROR",
       "handlers": ["console"],
       "propagate": false
