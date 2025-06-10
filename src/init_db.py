@@ -1,5 +1,7 @@
 # src/init_db.py
-from app.db import init_db
+from app.database.session import init_db
+from app.models import user
 
 if __name__ == "__main__":
-    init_db()
+    import asyncio
+    asyncio.run(init_db())

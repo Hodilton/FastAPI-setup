@@ -2,6 +2,7 @@
 from pydantic_settings import BaseSettings
 from typing import List
 from pathlib import Path
+from pydantic import Field
 
 class Settings(BaseSettings):
     FIRST_SUPERUSER: str
@@ -9,12 +10,11 @@ class Settings(BaseSettings):
     DATABASE_URL: str
 
     API_V1_STR: str = "/api/v1"
-    SECRET_KEY: str = "supersecretkey123"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 11520
-    BACKEND_CORS_ORIGINS: List[str] = ["*"]
-    PROJECT_NAME: str = "My FastAPI App"
+    BACKEND_CORS_ORIGINS: List[str] = Field(default_factory=lambda: ["*"])
+    PROJECT_NAME: str = "MyApp"
 
     class Config:
         env_file = str(Path(__file__).resolve().parents[1] / ".env")
+        env_file_encoding = 'utf-8'
 
 settings = Settings()
